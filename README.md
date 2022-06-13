@@ -4,5 +4,5 @@
 
 Before start kindly set the database.js file to connect to the database
 
-npm i
-npm start
+- npm i
+- npm start
