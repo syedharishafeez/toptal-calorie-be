@@ -1,10 +1,15 @@
-let jwt_decode = require("jwt-decode");
+const jwt = require("jsonwebtoken");
+const JWT_SECRET = "toptal-test";
 exports.decodeRequestToken = (req, res, next) => {
-  // let token =
-  //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJyb2xlIjoidXNlciIsInVzZXJJZCI6IjEtOSJ9.phwH3EMOr_cePhbgB_lP1ymDP2flOBRP5tFXfU4-gts";
+  // user token
   let token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJyb2xlIjoidXNlciIsInVzZXJJZCI6IjEtODkifQ.k_N-M1bRKg-GSOJjPyWEOrHo2UgiL7leXjvfsqvMU-Y";
-  let decodedToken = jwt_decode(token);
+    // "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoidXNlciIsInVzZXJJZCI6IjEtODkiLCJpYXQiOjE2NTUxMjcyMTN9.9pkEp57usRU-q_YYkocLbofHOstOZSKFeW-wnmgMRFE";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmE1Mjk2NGEyZjY5N2ZjY2M2Nzk5MzMiLCJyb2xlIjoidXNlciIsImlhdCI6MTY1NTEyODA3MX0.XIR6FZf4KEj37jBGoI607IL33N9QrpJnfG0YlIHXbAQ";
+
+  // admin token
+  // let token =
+  //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4iLCJ1c2VySWQiOiJhZG1pbjEyMyIsImlhdCI6MTY1NTEyNzI2Mn0.xGYlM0ryOoiCJ_oLnlyLdydacZtlTQPapI20VAihq78";
+  let decodedToken = jwt.verify(token, JWT_SECRET);
   req.headers = { ...req.headers, decodedToken: { ...decodedToken } };
   next();
 };
@@ -20,4 +25,9 @@ exports.generatePassword = () => {
     password += charset.charAt(Math.floor(Math.random() * n));
   }
   return password;
+};
+
+exports.generateToken = (payload) => {
+  let token = jwt.sign(payload, JWT_SECRET);
+  return token;
 };

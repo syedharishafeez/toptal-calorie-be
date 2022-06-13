@@ -5,6 +5,27 @@ exports.getCalories = async function (req, res, next) {
     let query = {};
     if (req.headers.decodedToken.role === "user") {
       query["userId"] = req.headers.decodedToken.userId;
+    } else if (req.query.userId) {
+      query["userId"] = req.query.userId;
+    }
+    if (req.query.fromDate || req.query.toDate) {
+      if (
+        (req.query.fromDate && !req.query.toDate) ||
+        (!req.query.fromDate && req.query.toDate)
+      ) {
+        throw Error("both fromDate and toDate are required");
+      } else if (new Date(req.query.fromDate) > new Date(req.query.toDate)) {
+        throw Error("fromDate should be smaller than or equal to toDate");
+      } else if (req.query.fromDate === req.query.toDate) {
+        query["time"] = {
+          $eq: new Date(req.query.fromDate),
+        };
+      } else {
+        query["time"] = {
+          $gte: new Date(req.query.fromDate),
+          $lte: new Date(req.query.toDate),
+        };
+      }
     }
 
     let calories = await CalorieService.getCalories({ ...query });

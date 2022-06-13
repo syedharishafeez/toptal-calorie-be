@@ -1,4 +1,5 @@
 let express = require("express");
+let cors = require("cors");
 let bodyParser = require("body-parser");
 let calorieRoutes = require("./routes/calorie.route");
 let friendRoutes = require("./routes/friend.route");
@@ -6,7 +7,9 @@ const { decodeRequestToken } = require("./middlewares");
 const { connectDB } = require("./utils/database");
 const PORT = 5000;
 
-var app = express();
+let app = express();
+
+app.use(cors());
 connectDB();
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
