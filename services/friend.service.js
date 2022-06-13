@@ -6,7 +6,14 @@ exports.addFriend = async function (query, payload) {
       upsert: true,
       new: true,
     });
-    delete savedFriend._doc["password"];
+    if (savedFriend) {
+      if (savedFriend._doc) {
+        delete savedFriend._doc["password"];
+      } else {
+        delete savedFriend["password"];
+      }
+    }
+
     return savedFriend;
   } catch (e) {
     console.log("e === ", e);
@@ -21,10 +28,18 @@ exports.updateFriendInvite = async function (query, payload) {
       { ...payload },
       { new: true }
     ).lean();
-    delete updatedFriend._doc["password"];
-    delete updatedFriend._doc["token"];
+    if (updatedFriend) {
+      if (updatedFriend._doc) {
+        delete updatedFriend._doc["password"];
+        delete updatedFriend._doc["token"];
+      } else {
+        delete updatedFriend["password"];
+        delete updatedFriend["token"];
+      }
+    }
+
     return updatedFriend;
   } catch (e) {
-    throw Error("Error while updating calories");
+    throw Error("Error while adding a friend");
   }
 };
