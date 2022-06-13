@@ -3,8 +3,9 @@ let cors = require("cors");
 let bodyParser = require("body-parser");
 let calorieRoutes = require("./routes/calorie.route");
 let friendRoutes = require("./routes/friend.route");
-const { decodeRequestToken } = require("./middlewares");
+const { decodeRequestToken, checkAdmin } = require("./middlewares");
 const { connectDB } = require("./utils/database");
+const reportRoutes = require("./routes/report.route");
 const PORT = 5000;
 
 let app = express();
@@ -22,6 +23,7 @@ app.get("/", (req, res, next) => {
 });
 
 app.use("/calorie", decodeRequestToken, calorieRoutes);
+app.use("/report", decodeRequestToken, checkAdmin, reportRoutes);
 app.use("/invite-friend", decodeRequestToken, friendRoutes);
 
 app.listen(PORT, () => {

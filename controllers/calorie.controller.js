@@ -1,3 +1,4 @@
+const moment = require("moment");
 let CalorieService = require("../services/calorie.service");
 
 exports.getCalories = async function (req, res, next) {
@@ -48,7 +49,10 @@ exports.addCalorie = async function (req, res, next) {
           ? req.headers.decodedToken.userId
           : req.body.userId,
     };
-    let calories = await CalorieService.addCalorie({ ...payload });
+    let calories = await CalorieService.addCalorie({
+      ...payload,
+      time: moment(payload.time).startOf("day").format("DD MMM YYYY"),
+    });
     return res.status(200).json({
       status: 200,
       data: calories,
@@ -90,6 +94,11 @@ exports.updateCalorie = async function (req, res, next) {
     let payload = { ...req.body };
     if (req.headers.decodedToken.role === "user") {
       query["userId"] = req.headers.decodedToken.userId;
+    }
+    if (payload["time"]) {
+      payload["time"] = moment(payload.time)
+        .startOf("day")
+        .format("DD MMM YYYY");
     }
     let calories = await CalorieService.updateCalorie(
       { ...query },
